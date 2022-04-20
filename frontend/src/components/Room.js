@@ -37,15 +37,15 @@ export default class Room extends Component {
       })
   }
 
-  leaveButtonPressed(){
+  leaveButtonPressed() {
     const requestOptions = {
       method: "POST",
-      headers: {"Content-Type" : "application/json"}
-    }
-    fetch('/api/leave-room', requestOptions).then((_response) => {
-      this.props.leaveRoomCallback()
-      this.props.history.push('/')
-    })
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch("/api/leave-room", requestOptions).then((_response) => {
+      this.props.leaveRoomCallback();
+      this.props.history.push("/");
+    });
   }
 
   updateShowSettings(value){
