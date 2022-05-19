@@ -10,7 +10,8 @@ export default class Room extends Component {
         guestCanPause: false,
         isHost: false,
         showSettings: false,
-        spotifyAuthenticated: false
+        spotifyAuthenticated: false,
+        song: {}
     }
     this.roomCode = this.props.match.params.roomCode
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this)
@@ -19,7 +20,8 @@ export default class Room extends Component {
     this.renderSettings = this.renderSettings.bind(this)
     this.getRoomDetails = this.getRoomDetails.bind(this)
     this.authenticateSpotify = this.authenticateSpotify.bind(this)
-    this.getRoomDetails()
+    this.getRoomDetails();
+    this.getCurrentSong();
   }
 
   getRoomDetails(){
@@ -40,6 +42,19 @@ export default class Room extends Component {
             this.authenticateSpotify()
           }
       })
+  }
+
+  getCurrentSong(){
+    fetch('/spotify/current-song').then((response) => {
+      if(!response.ok){
+        return {};
+      }else{
+        return response.json(); 
+      }
+    }).then((data) => {
+      this.setState({song: data})
+      console.log(data)
+    })
   }
 
   leaveButtonPressed() {
@@ -113,16 +128,8 @@ export default class Room extends Component {
     return <Grid container spacing={1}>
       <Grid item xs={12} align="center">
         <h1>Code : {this.roomCode}</h1>
-      </Grid>
-      <Grid item xs={12} align="center">
-        <h2>Votes : {this.state.votesToSkip.toString()}</h2>
-      </Grid>
-      <Grid item xs={12} align="center">
-        <h2>Guest can Pause : {this.state.guestCanPause.toString()}</h2>
-      </Grid>
-      <Grid item xs={12} align="center">
-        <h2>Host : {this.state.isHost.toString()}</h2>
-      </Grid>
+      </Grid>  
+      {/* {this.state.song} */}
       {this.state.isHost ? this.renderSettingsButton() : null}
       <Grid item xs={12} align="center">
         <Button variant="contained" color="secondary" onClick={this.leaveButtonPressed}>

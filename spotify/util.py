@@ -1,9 +1,8 @@
-from lib2to3.pgen2 import token
 from .models import SpotifyToken
 from django.utils import timezone
 from datetime import timedelta
 from .credentials import CLIENT_ID, CLIENT_SECRET
-from requests import head, post, put, get
+from requests import post, put, get
 
 
 BASE_URL = "https://api.spotify.com/v1/me/"
@@ -79,4 +78,4 @@ def execute_spotify_api_request(session_id, endpoint, post_=False, put_=False):
     try:
         return response.json()
     except:
-        return {'Error': 'Issue with request'}            
+        return {'error': 'Issue with request'}            
