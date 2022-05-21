@@ -110,7 +110,6 @@ class CurrentSong(APIView):
             room.save(update_fields=['current_song'])
             votes = Vote.objects.filter(room=room).delete()
 
-
 class PauseSong(APIView):
     def put(self, response, format=None):
         room_code = self.request.session.get('room_code')
@@ -133,15 +132,17 @@ class PlaySong(APIView):
 
 class SkipSong(APIView):
     def post(self, request, format=None):
-        room_code = self.request.session.get('room_code')[0]
-        room = Room.objects().filter(code = room_code)
+        room_code = self.request.session.get('room_code')
+        room = Room.objects.filter(code=room_code)[0]
         votes = Vote.objects.filter(room=room, song_id=room.current_song)
         votes_needed = room.votes_to_skip
+
         if self.request.session.session_key == room.host or len(votes) + 1 >= votes_needed:
-            votes.delete() 
+            votes.delete()
             skip_song(room.host)
         else:
-            vote = Vote(user=self.request.session.session_key, room=room, song_id=room.current_song)
+            vote = Vote(user=self.request.session.session_key,
+                        room=room, song_id=room.current_song)
             vote.save()
 
-        return Response({}, status=status.HTTP_204_NO_CONTENT)            
+        return Response({}, status.HTTP_204_NO_CONTENT)          
